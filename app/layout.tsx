@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI crawler view",
+  title: "Botsight",
   description:
     "See which AI crawlers a site's robots.txt admits, whether the server agrees, and what a non-rendering crawler actually reads.",
 };

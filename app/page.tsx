@@ -5,7 +5,7 @@ export default function Page() {
     <main className="mx-auto w-full max-w-2xl px-6 py-14">
       <header className="mb-10 flex flex-col gap-3">
         <h1 className="text-3xl font-semibold tracking-tight">
-          AI crawler view
+          Botsight
         </h1>
         <p className="text-muted">
           Every AI company runs its crawlers under separate names, and a
