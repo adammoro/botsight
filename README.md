@@ -13,11 +13,14 @@ Then open http://localhost:3000.
 
 ## What it reports
 
-**Who robots.txt admits.** 25 agents evaluated and grouped by what they are
+**Who robots.txt admits.** 29 agents evaluated and grouped by what they are
 for — training, search and answer, user-triggered fetch, and the control-only
-tokens that never crawl at all. Each row shows the verdict, the rule that
-decided it, and whether the agent was named explicitly or fell through to
-`User-agent: *`, which is usually where the surprises are.
+tokens that never crawl at all. That includes the traditional search engine
+crawlers (Bingbot, YandexBot, Baiduspider, DuckDuckBot) alongside the AI ones,
+since search visibility is as much the point here as AI visibility. Each row
+shows the verdict, the rule that decided it, and whether the agent was named
+explicitly or fell through to `User-agent: *`, which is usually where the
+surprises are.
 
 **Whether the server agrees.** The page is requested as a browser and as
 several real crawler user agents. When a browser gets 200 and a crawler gets

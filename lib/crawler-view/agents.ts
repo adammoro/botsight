@@ -97,6 +97,40 @@ export const agents: Agent[] = [
     note: "Controls whether Google may use your content for Gemini training and grounding. Separate from Googlebot — blocking it costs you nothing in Search.",
   },
 
+  // Microsoft
+  {
+    token: "bingbot",
+    label: "Bingbot",
+    operator: "Microsoft",
+    purpose: "search",
+    note: "Powers Bing Search. The same index also grounds Copilot's web answers, so blocking it affects both.",
+  },
+
+  // Yandex
+  {
+    token: "YandexBot",
+    label: "YandexBot",
+    operator: "Yandex",
+    purpose: "search",
+  },
+
+  // Baidu
+  {
+    token: "Baiduspider",
+    label: "Baiduspider",
+    operator: "Baidu",
+    purpose: "search",
+  },
+
+  // DuckDuckGo
+  {
+    token: "DuckDuckBot",
+    label: "DuckDuckBot",
+    operator: "DuckDuckGo",
+    purpose: "search",
+    note: "The classic DuckDuckGo web crawler, distinct from DuckAssistBot's AI-answer fetches below.",
+  },
+
   // Common Crawl
   {
     token: "CCBot",
