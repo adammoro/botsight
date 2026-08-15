@@ -117,8 +117,10 @@ export async function analyze(input: string): Promise<Analysis> {
     };
   });
 
-  // A small, deliberate set. Sending twenty requests to someone else's server to
-  // answer one question would make this tool the thing it warns you about.
+  // Every crawler with a confirmed real User-Agent string (see agents.ts). This
+  // tool is run by the person asking the question, against sites they chose —
+  // there's no shared operator whose logs absorb the traffic, so unlike a
+  // hosted service there's no one else's exposure to weigh against completeness.
   const targets: Array<{ label: string; ua: string }> = [
     { label: "A browser", ua: browserUa },
     ...fetchableAgents.map((a) => ({ label: a.label, ua: a.ua! })),
