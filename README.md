@@ -1,8 +1,8 @@
 # Botsight
 
-Point it at a URL and see which AI crawlers the site's `robots.txt` admits,
-whether the server actually agrees, and what a crawler that doesn't run
-JavaScript really reads.
+Point it at a URL and see which AI and search engine crawlers the site's
+`robots.txt` admits, whether the server actually agrees, and what a crawler
+that doesn't run JavaScript really reads.
 
 ```bash
 npm install
@@ -85,6 +85,11 @@ inconsiderate to every site a stranger points it at.
 AI companies add and retire crawler user-agents constantly. The agent registry
 in `lib/crawler-view/agents.ts` is the part that goes stale — worth a look
 every few months against the operators' published crawler documentation.
+
+Five agents (Bytespider, cohere-ai, Diffbot, YouBot, Timpibot) don't have a
+`ua`, because no confirmed official User-Agent string could be found for them
+at the time they were added — see each entry's `note`. If an operator
+publishes one, add it and the agent joins the live fetch automatically.
 
 ## License
 
