@@ -78,6 +78,6 @@ AI companies add and retire crawler user-agents constantly. The agent registry
 in `lib/crawler-view/agents.ts` is the part that goes stale — worth a look
 every few months against the operators' published crawler documentation.
 
-## Licence
+## License
 
 MIT.
