@@ -1,4 +1,4 @@
-# AI crawler view
+# Botsight
 
 Point it at a URL and see which AI crawlers the site's `robots.txt` admits,
 whether the server actually agrees, and what a crawler that doesn't run
