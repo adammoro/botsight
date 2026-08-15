@@ -1,8 +1,8 @@
 # Working notes
 
-A tool people clone and run locally: point it at a URL, see which AI
-crawlers the site's robots.txt admits, whether the server agrees when
-actually asked, and what a non-rendering crawler reads.
+A tool people clone and run locally: point it at a URL, see which AI and
+search engine crawlers the site's robots.txt admits, whether the server
+agrees when actually asked, and what a non-rendering crawler reads.
 
 ## Commands
 
@@ -39,4 +39,9 @@ proven otherwise.
 ## Goes stale
 
 `lib/crawler-view/agents.ts` — AI companies add and retire crawler tokens
-constantly. Check operators' published crawler docs quarterly. 
+constantly. Check operators' published crawler docs quarterly. Most agents
+now carry a `ua` and get a real live request (`fetchableAgents` in
+`agents.ts`); the exceptions (currently Bytespider, cohere-ai, Diffbot,
+YouBot, Timpibot) have no confirmed official User-Agent string — don't invent
+one, a fabricated header misrepresents what the real crawler sees. Add `ua`
+only once you've verified it against the operator's own docs.

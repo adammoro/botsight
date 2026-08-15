@@ -1,8 +1,8 @@
 # Botsight
 
-Point it at a URL and see which AI crawlers the site's `robots.txt` admits,
-whether the server actually agrees, and what a crawler that doesn't run
-JavaScript really reads.
+Point it at a URL and see which AI and search engine crawlers the site's
+`robots.txt` admits, whether the server actually agrees, and what a crawler
+that doesn't run JavaScript really reads.
 
 ```bash
 npm install
@@ -13,16 +13,21 @@ Then open http://localhost:3000.
 
 ## What it reports
 
-**Who robots.txt admits.** 25 agents evaluated and grouped by what they are
+**Who robots.txt admits.** 29 agents evaluated and grouped by what they are
 for — training, search and answer, user-triggered fetch, and the control-only
-tokens that never crawl at all. Each row shows the verdict, the rule that
-decided it, and whether the agent was named explicitly or fell through to
-`User-agent: *`, which is usually where the surprises are.
+tokens that never crawl at all. That includes the traditional search engine
+crawlers (Bingbot, YandexBot, Baiduspider, DuckDuckBot) alongside the AI ones,
+since search visibility is as much the point here as AI visibility. Each row
+shows the verdict, the rule that decided it, and whether the agent was named
+explicitly or fell through to `User-agent: *`, which is usually where the
+surprises are.
 
-**Whether the server agrees.** The page is requested as a browser and as
-several real crawler user agents. When a browser gets 200 and a crawler gets
-403, that is a CDN or firewall rule contradicting `robots.txt` — often news to
-the site's owner.
+**Whether the server agrees.** The page is requested as a browser and as every
+crawler with a confirmed, officially published User-Agent string — 22 of the
+29 agents; the rest have no real header to send as, so they're evaluated
+against `robots.txt` only. When a browser gets 200 and a crawler gets 403,
+that is a CDN or firewall rule contradicting `robots.txt` — often news to the
+site's owner.
 
 **What a crawler reads.** Text extracted from the raw HTML with scripts and
 markup stripped: word count, approximate tokens, text-to-HTML ratio, and an
@@ -69,14 +74,22 @@ hammering and nothing more. Running locally, that is fine. Hosting it publicly
 means replacing it with something backed by shared state — and reading the
 section above first.
 
-Each check makes seven outbound requests to the target: `robots.txt`,
-`llms.txt`, and the page as six different agents.
+Each check makes 25 outbound requests to the target: `robots.txt`, `llms.txt`,
+and the page as a browser plus 22 real crawler user agents. That's only
+practical because this isn't a shared, hosted instance — see "Run it
+yourself" above. Hosting this publicly with that request count would be
+inconsiderate to every site a stranger points it at.
 
 ## Maintenance
 
 AI companies add and retire crawler user-agents constantly. The agent registry
 in `lib/crawler-view/agents.ts` is the part that goes stale — worth a look
 every few months against the operators' published crawler documentation.
+
+Five agents (Bytespider, cohere-ai, Diffbot, YouBot, Timpibot) don't have a
+`ua`, because no confirmed official User-Agent string could be found for them
+at the time they were added — see each entry's `note`. If an operator
+publishes one, add it and the agent joins the live fetch automatically.
 
 ## License
 

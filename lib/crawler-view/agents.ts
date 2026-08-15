@@ -50,6 +50,7 @@ export const agents: Agent[] = [
     label: "OAI-SearchBot",
     operator: "OpenAI",
     purpose: "search",
+    ua: "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; OAI-SearchBot/1.0; +https://openai.com/searchbot)",
     note: "Blocking this removes you from ChatGPT search results. It does not affect training.",
   },
   {
@@ -57,6 +58,7 @@ export const agents: Agent[] = [
     label: "ChatGPT-User",
     operator: "OpenAI",
     purpose: "user",
+    ua: "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ChatGPT-User/1.0; +https://openai.com/bot)",
   },
 
   // Anthropic
@@ -72,12 +74,14 @@ export const agents: Agent[] = [
     label: "Claude-SearchBot",
     operator: "Anthropic",
     purpose: "search",
+    ua: "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Claude-SearchBot/1.0; +Claude-SearchBot@anthropic.com)",
   },
   {
     token: "Claude-User",
     label: "Claude-User",
     operator: "Anthropic",
     purpose: "user",
+    ua: "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Claude-User/1.0; +Claude-User@anthropic.com)",
   },
 
   // Google
@@ -87,7 +91,7 @@ export const agents: Agent[] = [
     operator: "Google",
     purpose: "search",
     ua: "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-    note: "Included as a reference point. Blocking it removes you from Google Search.",
+    note: "Crawls for Google Search. Blocking it removes you from Google's results entirely.",
   },
   {
     token: "Google-Extended",
@@ -95,6 +99,44 @@ export const agents: Agent[] = [
     operator: "Google",
     purpose: "control",
     note: "Controls whether Google may use your content for Gemini training and grounding. Separate from Googlebot — blocking it costs you nothing in Search.",
+  },
+
+  // Microsoft
+  {
+    token: "bingbot",
+    label: "Bingbot",
+    operator: "Microsoft",
+    purpose: "search",
+    ua: "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/126.0.0.0 Safari/537.36",
+    note: "Powers Bing Search. The same index also grounds Copilot's web answers, so blocking it affects both.",
+  },
+
+  // Yandex
+  {
+    token: "YandexBot",
+    label: "YandexBot",
+    operator: "Yandex",
+    purpose: "search",
+    ua: "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)",
+  },
+
+  // Baidu
+  {
+    token: "Baiduspider",
+    label: "Baiduspider",
+    operator: "Baidu",
+    purpose: "search",
+    ua: "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)",
+  },
+
+  // DuckDuckGo
+  {
+    token: "DuckDuckBot",
+    label: "DuckDuckBot",
+    operator: "DuckDuckGo",
+    purpose: "search",
+    ua: "DuckDuckBot/1.1; (+http://duckduckgo.com/duckduckbot.html)",
+    note: "The classic DuckDuckGo web crawler, distinct from DuckAssistBot's AI-answer fetches below.",
   },
 
   // Common Crawl
@@ -120,6 +162,7 @@ export const agents: Agent[] = [
     label: "Perplexity-User",
     operator: "Perplexity",
     purpose: "user",
+    ua: "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Perplexity-User/1.0; +https://perplexity.ai/perplexity-user)",
   },
 
   // Apple
@@ -128,6 +171,7 @@ export const agents: Agent[] = [
     label: "Applebot",
     operator: "Apple",
     purpose: "search",
+    ua: "Mozilla/5.0 (Applebot/0.1; +http://www.apple.com/go/applebot)",
   },
   {
     token: "Applebot-Extended",
@@ -143,12 +187,14 @@ export const agents: Agent[] = [
     label: "Meta-ExternalAgent",
     operator: "Meta",
     purpose: "training",
+    ua: "meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/web-crawlers)",
   },
   {
     token: "Meta-ExternalFetcher",
     label: "Meta-ExternalFetcher",
     operator: "Meta",
     purpose: "user",
+    ua: "meta-externalfetcher/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/web-crawlers)",
   },
 
   // Others
@@ -157,66 +203,81 @@ export const agents: Agent[] = [
     label: "Bytespider",
     operator: "ByteDance",
     purpose: "training",
+    note: "ByteDance has not published an official User-Agent string for this crawler, so this tool can't request as it — evaluated against robots.txt only.",
   },
   {
     token: "Amazonbot",
     label: "Amazonbot",
     operator: "Amazon",
     purpose: "search",
+    ua: "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Amazonbot/0.1; +https://developer.amazon.com/support/amazonbot) Chrome/126.0.0.0 Safari/537.36",
   },
   {
     token: "MistralAI-User",
     label: "MistralAI-User",
     operator: "Mistral",
     purpose: "user",
+    ua: "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; MistralAI-User/1.0; +https://docs.mistral.ai/robots)",
   },
   {
     token: "cohere-ai",
     label: "cohere-ai",
     operator: "Cohere",
     purpose: "training",
+    note: "Cohere has not published an official User-Agent string for this token, so this tool can't request as it — evaluated against robots.txt only.",
   },
   {
     token: "AI2Bot",
     label: "AI2Bot",
     operator: "Allen Institute",
     purpose: "training",
+    ua: "Mozilla/5.0 (compatible) AI2Bot (+https://www.allenai.org/crawler)",
   },
   {
     token: "DuckAssistBot",
     label: "DuckAssistBot",
     operator: "DuckDuckGo",
     purpose: "search",
+    ua: "DuckAssistBot/1.2; (+http://duckduckgo.com/duckassistbot.html)",
   },
   {
     token: "Diffbot",
     label: "Diffbot",
     operator: "Diffbot",
     purpose: "training",
+    note: "Diffbot's published User-Agent has changed across versions and the current one isn't confirmed, so this tool can't request as it — evaluated against robots.txt only.",
   },
   {
     token: "Omgilibot",
     label: "Omgilibot",
     operator: "Webz.io",
     purpose: "training",
-    note: "Collects pages into datasets sold on to other companies, some of which are used for model training. Blocking it does not tell you who the eventual buyer is.",
+    ua: "omgili/0.5 +https://omgili.com",
+    note: "Collects pages into datasets sold on to other companies, some of which are used for model training. Blocking it does not tell you who the eventual buyer is. Sends as \"omgili\" on the wire even though the robots.txt token is Omgilibot.",
   },
   {
     token: "YouBot",
     label: "YouBot",
     operator: "You.com",
     purpose: "search",
+    note: "You.com has not published a full User-Agent string for this crawler, so this tool can't request as it — evaluated against robots.txt only.",
   },
   {
     token: "Timpibot",
     label: "Timpibot",
     operator: "Timpi",
     purpose: "search",
-    note: "Crawls for Timpi, a decentralized search index. Often listed alongside training crawlers in blocklists, though its stated purpose is search.",
+    note: "Crawls for Timpi, a decentralized search index. Often listed alongside training crawlers in blocklists, though its stated purpose is search. No official User-Agent string is published, so this tool can't request as it — evaluated against robots.txt only.",
   },
 ];
 
-/** Agents we send a real request as. Deliberately small — see fetchMatrix. */
+/**
+ * Agents we send a real request as. Excludes control-purpose tokens (they
+ * never make requests, so there's nothing real to send as) and the handful
+ * of crawlers whose operators haven't published a confirmed User-Agent
+ * string — sending a made-up header would misrepresent what the real
+ * crawler gets.
+ */
 export const fetchableAgents = agents.filter((a) => a.ua);
 
 export const browserUa =
