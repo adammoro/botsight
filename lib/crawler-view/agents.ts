@@ -87,7 +87,7 @@ export const agents: Agent[] = [
     operator: "Google",
     purpose: "search",
     ua: "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-    note: "Included as a reference point. Blocking it removes you from Google Search.",
+    note: "Crawls for Google Search. Blocking it removes you from Google's results entirely.",
   },
   {
     token: "Google-Extended",
