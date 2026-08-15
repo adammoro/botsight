@@ -39,5 +39,4 @@ proven otherwise.
 ## Goes stale
 
 `lib/crawler-view/agents.ts` — AI companies add and retire crawler tokens
-constantly. Check operators' published crawler docs quarterly. The
-adammoro.com robots.txt is maintained in tandem with this list.
+constantly. Check operators' published crawler docs quarterly. 
