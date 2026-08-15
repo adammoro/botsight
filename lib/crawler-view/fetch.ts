@@ -5,7 +5,7 @@ import net from "node:net";
 
 /**
  * Fetching URLs supplied by strangers is server-side request forgery waiting to
- * happen. The defences here, in order of how much they matter:
+ * happen. The defenses here, in order of how much they matter:
  *
  *   1. Address validation runs in the `lookup` hook, so it happens at connect
  *      time. Resolving first and then handing the hostname to a client leaves a

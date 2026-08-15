@@ -104,7 +104,7 @@ export const agents: Agent[] = [
     operator: "Common Crawl",
     purpose: "training",
     ua: "CCBot/2.0 (https://commoncrawl.org/faq/)",
-    note: "The quiet one. Its archive feeds training sets across the whole industry, so allowing it is closer to a blanket permission than most people realise.",
+    note: "The quiet one. Its archive feeds training sets across the whole industry, so allowing it is closer to a blanket permission than most people realize.",
   },
 
   // Perplexity
@@ -212,7 +212,7 @@ export const agents: Agent[] = [
     label: "Timpibot",
     operator: "Timpi",
     purpose: "search",
-    note: "Crawls for Timpi, a decentralised search index. Often listed alongside training crawlers in blocklists, though its stated purpose is search.",
+    note: "Crawls for Timpi, a decentralized search index. Often listed alongside training crawlers in blocklists, though its stated purpose is search.",
   },
 ];
 
