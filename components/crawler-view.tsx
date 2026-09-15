@@ -7,6 +7,15 @@ import {
   type Purpose,
 } from "@/lib/crawler-view/agents";
 import type { Analysis, AgentVerdict } from "@/lib/crawler-view/analyze";
+import type { Extraction } from "@/lib/crawler-view/extract";
+
+type RenderSuccess = {
+  ok: true;
+  extraction: Extraction;
+  finalUrl: string;
+  elapsedMs: number;
+};
+type RenderResponse = RenderSuccess | { error: string };
 
 const purposeOrder: Purpose[] = ["training", "search", "user", "control"];
 
@@ -56,11 +65,17 @@ export function CrawlerView() {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<Analysis | null>(null);
 
+  const [renderBusy, setRenderBusy] = useState(false);
+  const [renderError, setRenderError] = useState<string | null>(null);
+  const [rendered, setRendered] = useState<RenderSuccess | null>(null);
+
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     setBusy(true);
     setError(null);
     setData(null);
+    setRendered(null);
+    setRenderError(null);
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
@@ -74,6 +89,29 @@ export function CrawlerView() {
       setError("Could not reach the checker.");
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function runRender() {
+    setRenderBusy(true);
+    setRenderError(null);
+    setRendered(null);
+    try {
+      const res = await fetch("/api/render", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const json = (await res.json()) as RenderResponse;
+      if (!res.ok || "error" in json) {
+        setRenderError("error" in json ? json.error : "Something went wrong.");
+      } else {
+        setRendered(json);
+      }
+    } catch {
+      setRenderError("Could not reach the renderer.");
+    } finally {
+      setRenderBusy(false);
     }
   }
 
@@ -206,6 +244,111 @@ export function CrawlerView() {
                 <blockquote className="border-l-2 border-border pl-4 text-muted">
                   {data.extraction.excerpt}
                 </blockquote>
+              )}
+            </section>
+          )}
+
+          {data.extraction && (
+            <section className="flex flex-col gap-3">
+              <h2 className="text-sm font-medium uppercase tracking-wider text-muted">
+                Rendered with JavaScript
+              </h2>
+              <p className="text-sm text-muted">
+                Googlebot and a handful of others run a second pass: fetch the
+                raw HTML, then actually execute the page&apos;s scripts and
+                read the DOM afterward. This runs that same second pass in a
+                real headless browser, so you can see what the raw fetch above
+                misses.
+              </p>
+              {!rendered && (
+                <button
+                  type="button"
+                  onClick={runRender}
+                  disabled={renderBusy}
+                  className="w-fit rounded border border-accent px-4 py-2 font-medium text-accent transition-colors hover:bg-accent hover:text-background disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-accent"
+                >
+                  {renderBusy ? "Rendering… this launches a real browser, give it a few seconds" : "Run rendered check"}
+                </button>
+              )}
+              {renderError && (
+                <p className="rounded border border-danger px-4 py-3 text-danger">
+                  {renderError}
+                </p>
+              )}
+              {rendered && (
+                <>
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[26rem] border-collapse text-left text-sm">
+                      <thead>
+                        <tr className="text-muted">
+                          <th className="pb-2 pr-4 font-medium"></th>
+                          <th className="pb-2 pr-4 font-medium">Raw fetch</th>
+                          <th className="pb-2 font-medium">Rendered</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-t border-border">
+                          <td className="py-2 pr-4 text-muted">Words</td>
+                          <td className="py-2 pr-4">
+                            {data.extraction.wordCount.toLocaleString()}
+                          </td>
+                          <td className="py-2 font-medium text-accent">
+                            {rendered.extraction.wordCount.toLocaleString()}
+                          </td>
+                        </tr>
+                        <tr className="border-t border-border">
+                          <td className="py-2 pr-4 text-muted">Approx tokens</td>
+                          <td className="py-2 pr-4">
+                            {data.extraction.approxTokens.toLocaleString()}
+                          </td>
+                          <td className="py-2 font-medium text-accent">
+                            {rendered.extraction.approxTokens.toLocaleString()}
+                          </td>
+                        </tr>
+                        <tr className="border-t border-border">
+                          <td className="py-2 pr-4 text-muted">Text-to-HTML ratio</td>
+                          <td className="py-2 pr-4">
+                            {(data.extraction.textRatio * 100).toFixed(1)}%
+                          </td>
+                          <td className="py-2 font-medium text-accent">
+                            {(rendered.extraction.textRatio * 100).toFixed(1)}%
+                          </td>
+                        </tr>
+                        <tr className="border-t border-border">
+                          <td className="py-2 pr-4 text-muted">Headings found</td>
+                          <td className="py-2 pr-4">{data.extraction.headings.length}</td>
+                          <td className="py-2 font-medium text-accent">
+                            {rendered.extraction.headings.length}
+                          </td>
+                        </tr>
+                        <tr className="border-t border-border">
+                          <td className="py-2 pr-4 text-muted">Structured data</td>
+                          <td className="py-2 pr-4">
+                            {data.extraction.structuredData.length > 0
+                              ? data.extraction.structuredData.join(", ")
+                              : "none"}
+                          </td>
+                          <td className="py-2 font-medium text-accent">
+                            {rendered.extraction.structuredData.length > 0
+                              ? rendered.extraction.structuredData.join(", ")
+                              : "none"}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p className="text-sm text-muted">
+                    Rendered in {(rendered.elapsedMs / 1000).toFixed(1)}s.
+                    {rendered.finalUrl !== data.url && (
+                      <> Settled at {rendered.finalUrl} after redirects/client routing.</>
+                    )}
+                  </p>
+                  {rendered.extraction.excerpt && (
+                    <blockquote className="border-l-2 border-border pl-4 text-muted">
+                      {rendered.extraction.excerpt}
+                    </blockquote>
+                  )}
+                </>
               )}
             </section>
           )}

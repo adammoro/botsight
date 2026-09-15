@@ -30,6 +30,14 @@ proven otherwise.
   passed validation because `new URL()` keeps brackets and
   `net.isIP("[::1]")` is 0 — that class of bug is why the test suite is
   paranoid.
+- **`lib/crawler-view/render.ts` is also security-critical**, same reason,
+  different mechanism. It drives a real headless Chromium (`puppeteer-core`
+  against a system binary, not a bundled download), which resolves and
+  connects on its own — Node's `lookup` hook has no reach into it. The guard
+  is request interception: every request the page makes (navigation,
+  redirects, subresources) is checked against `isBlockedIp()` from
+  `fetch.ts` before being allowed through. Reuses the same blocklist on
+  purpose — one list of forbidden ranges, not two to keep in sync.
 - **The rate limit is weak on purpose** (in-memory, per-instance) and the
   README says so. It's fine for local use, which is the intended use.
 - robots.txt evaluation follows RFC 9309: longest match wins, `Allow`
@@ -45,3 +53,13 @@ now carry a `ua` and get a real live request (`fetchableAgents` in
 YouBot, Timpibot) have no confirmed official User-Agent string — don't invent
 one, a fabricated header misrepresents what the real crawler sees. Add `ua`
 only once you've verified it against the operator's own docs.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

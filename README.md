@@ -11,6 +11,12 @@ npm run dev
 
 Then open http://localhost:3000.
 
+The optional "Rendered with JavaScript" pass needs a Chromium binary on the
+machine — it looks for `/usr/bin/chromium`, `/usr/bin/chromium-browser`,
+`/usr/bin/google-chrome`, `/usr/bin/google-chrome-stable`, or `$CHROME_PATH`
+if set. Without one, everything else still works; that section just reports
+the error instead of a result.
+
 ## What it reports
 
 **Who robots.txt admits.** 29 agents evaluated and grouped by what they are
@@ -33,6 +39,15 @@ site's owner.
 markup stripped: word count, approximate tokens, text-to-HTML ratio, and an
 excerpt. Pages assembled in the browser are flagged, because most AI crawlers
 do not run JavaScript and see almost nothing.
+
+**What a crawler that renders JavaScript sees.** An on-demand second pass —
+the same idea as Googlebot's two-pass indexing — that actually launches a
+headless browser, runs the page's scripts, and extracts the same stats
+(word count, tokens, text ratio, headings, structured data) from the
+resulting DOM. Sits side by side with the raw-fetch numbers above it, so the
+gap between "what a plain fetch gets" and "what a JS-executing crawler gets"
+is a number, not a guess. Not run automatically — it costs real CPU/RAM
+(a real Chromium process) — there's a button once a check has results.
 
 **The directives that aren't in robots.txt.** The robots meta tag,
 `X-Robots-Tag`, `noai` / `noimageai`, and whether `llms.txt` is published.
@@ -67,6 +82,21 @@ Fetching URLs supplied by a user is textbook SSRF, so:
   blocked, IPv4 and IPv6, including IPv4-mapped, NAT64 and 6to4 forms.
 - http and https only, ports 80 and 443 only, 2 MB cap, 8 second timeout,
   5 redirects maximum.
+
+**The rendered pass is a real browser, which is a wider SSRF surface than a
+plain fetch** — it resolves and connects to hosts on its own, outside Node's
+`lookup` hook above. It's closed the same way: every request the page makes
+(the navigation, every redirect, every subresource — images, XHR, fonts,
+whatever the page's own JS fetches) is intercepted, its hostname resolved
+and checked against the same blocked-range list, and only let through if it
+clears. That's a real request-by-request check, not a one-time check of the
+URL you typed, so it also catches SSRF attempts hiding behind a page's own
+client-side requests. It does not fully close DNS-rebinding between that
+check and Chromium's own connect — no browser hook pins a resolved IP for
+an arbitrary, runtime-discovered set of hostnames — but the window is the
+same shape as the one the raw-fetch path above already accepts, not a wider
+one. It also gets a tighter rate limit (4/minute vs. 10/minute) since it
+costs a real Chromium process rather than a handful of HTTP requests.
 
 **The rate limit is deliberately weak.** It is an in-memory counter, which on
 any multi-instance host is per-instance rather than per-user. It slows casual
